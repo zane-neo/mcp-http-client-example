@@ -29,20 +29,23 @@ async def main(server_url: str):
     """Connect to MCP server and list its capabilities.
 
     Args:
-        server_url: Full URL to SSE endpoint (e.g. http://localhost:8000/sse)
+        server_url: Full URL to SSE endpoint (e.g. http://localhost:9203/_plugins/_ml/mcp/sse?append_to_base_url=true)
     """
     if urlparse(server_url).scheme not in ("http", "https"):
         print("Error: Server URL must start with http:// or https://")
         sys.exit(1)
 
     try:
-        async with sse_client(server_url) as streams:
+        headers = {"Content-Type": "application/json"}
+        arguments = {"input": {"index": "test"}}
+        async with sse_client(server_url, headers=headers) as streams:
             async with ClientSession(streams[0], streams[1]) as session:
                 await session.initialize()
                 print("Connected to MCP server at", server_url)
                 print_items("tools", (await session.list_tools()))
-                print_items("resources", (await session.list_resources()))
-                print_items("prompts", (await session.list_prompts()))
+                print(await session.call_tool("ListIndexTool", arguments))
+                # print_items("resources", (await session.list_resources()))
+                # print_items("prompts", (await session.list_prompts()))
 
     except Exception as e:
         print(f"Error connecting to server: {e}")
