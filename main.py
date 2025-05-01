@@ -29,7 +29,7 @@ async def main(server_url: str):
     """Connect to MCP server and list its capabilities.
 
     Args:
-        server_url: Full URL to SSE endpoint (e.g. http://localhost:9203/_plugins/_ml/mcp/sse?append_to_base_url=true)
+        server_url: Full URL to SSE endpoint (e.g. http://localhost:9200/_plugins/_ml/mcp/sse?append_to_base_url=true)
     """
     if urlparse(server_url).scheme not in ("http", "https"):
         print("Error: Server URL must start with http:// or https://")
@@ -55,7 +55,7 @@ async def main(server_url: str):
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: uv run -- main.py <server_url>")
-        print("Example: uv run -- main.py http://localhost:8000/sse")
+        print("Example: uv run -- main.py http://localhost:9200/_plugins/_ml/mcp/sse?append_to_base_url=true")
         sys.exit(1)
 
     asyncio.run(main(sys.argv[1]))
